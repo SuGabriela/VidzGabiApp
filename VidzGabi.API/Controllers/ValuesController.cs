@@ -14,14 +14,19 @@ namespace VidzGabi.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+          var sArray = new string[] { "Gabriela", "Lourenco","OI" };
+            return sArray;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
+        // GET http://localhost:5000/api/values
+        [HttpGet("{id}")] 
         public ActionResult<string> Get(int id)
         {
-            return "value";
+            var sArray = new string[]{ "Gabriela", "Lourenco","OI" };
+            if (id > (sArray.Length - 1))
+            return "O valor digitado é maior do que o disponivel";
+
+            return sArray[id];
         }
 
         // POST api/values
