@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using VidzGabi.API.Data;
+using VidzGabi.API.Models;
 
 namespace VidzGabi.API.Controllers
 {
@@ -10,29 +13,42 @@ namespace VidzGabi.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        // GET api/values
+        private readonly DataContext _context;
+
+        public ValuesController(DataContext context)
+         {
+            _context = context;
+        }
+        // GET http://localhost:5000/api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<IActionResult> GetValues()
         {
-          var sArray = new string[] { "Gabriela", "Lourenco","OI" };
-            return sArray;
+          //var sArray = new string[] { "Gabriela", "Lourenco","OI" };
+            //return sArray;
+            var values = await _context.Values.ToListAsync();
+            return Ok(values);
         }
 
         // GET http://localhost:5000/api/values
         [HttpGet("{id}")] 
-        public ActionResult<string> Get(int id)
+        public async Task<IActionResult> GetValue(int id)
         {
-            var sArray = new string[]{ "Gabriela", "Lourenco","OI" };
-            if (id > (sArray.Length - 1))
-            return "O valor digitado é maior do que o disponivel";
+            var value = await _context.Values.FirstOrDefaultAsync(x => x.Id == id);
+            return Ok(value);
+           // var sArray = new string[]{ "Gabriela", "Lourenco","OI" };
+           // if (id > (sArray.Length - 1))
+           // return "O valor digitado é maior do que o disponivel";
 
-            return sArray[id];
+          //  return sArray[id];
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> PostValue(Value value)
         {
+            _context.Values.Add(value);
+            await _context.SaveChangesAsync();
+            return StatusCode(201);
         }
 
         // PUT api/values/5
